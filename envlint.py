@@ -17,6 +17,7 @@ hook.
 from __future__ import annotations
 
 import argparse
+import glob
 import math
 import os
 import re
@@ -188,10 +189,13 @@ def _classify(path: str, text: str) -> str:
 def lint_path(path: str) -> list[tuple[str, list[Finding]]]:
     results = []
     if os.path.isdir(path):
-        for name in (".env", ".env.local", "docker-compose.yml", "docker-compose.yaml", "compose.yml"):
-            p = os.path.join(path, name)
-            if os.path.exists(p):
-                results += lint_path(p)
+        candidates = glob.glob(os.path.join(path, ".env*"))
+        candidates += [os.path.join(path, name) for name in (
+            "docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml"
+        )]
+        for candidate in dict.fromkeys(sorted(candidates)):
+            if os.path.isfile(candidate):
+                results += lint_path(candidate)
         return results
     with open(path, encoding="utf-8", errors="replace") as fh:
         text = fh.read()
