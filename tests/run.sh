@@ -60,6 +60,11 @@ assert_exit "risky compose exits non-zero" 1 -- $EL "$T/docker-compose.yml" --no
 echo "== directory scan =="
 mkdir -p "$T/clean"; printf 'DEBUG=true\nPORT=8080\n' > "$T/clean/.env"
 assert_exit "clean dir exits zero" 0 -- $EL "$T/clean" --no-color
+mkdir -p "$T/variants"
+printf 'TOKEN=ghp_abcdefghijklmnopqrstuvwxyzABCDEFGHIJ\n' > "$T/variants/.env.production"
+printf 'services:\n  db:\n    ports:\n      - "5432:5432"\n' > "$T/variants/compose.yaml"
+assert "directory finds environment variants" ".env.production" -- $EL "$T/variants" --no-color
+assert "directory finds compose.yaml" "PostgreSQL port 5432" -- $EL "$T/variants" --no-color
 
 echo
 echo "== $pass passed, $fail failed =="
