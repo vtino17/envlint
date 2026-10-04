@@ -51,6 +51,7 @@ SENSITIVE_PORTS = {
     "27017": "MongoDB", "9200": "Elasticsearch", "5672": "RabbitMQ",
     "15672": "RabbitMQ admin", "2375": "Docker API", "2376": "Docker API",
     "9092": "Kafka", "11211": "memcached", "5601": "Kibana", "8086": "InfluxDB",
+    "5985": "WinRM", "5986": "WinRM TLS",
 }
 
 
